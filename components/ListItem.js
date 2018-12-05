@@ -15,13 +15,13 @@ class ListItem extends Component {
 
   render () {
     return (
-      <Text
-      id={this.props.id}
-      style={this.props.styling}
-      onPress={this.deleteItem}
-      >
-      {this.props.content}
-      </Text>
+      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <Text id={this.props.id} style={this.props.styling} >
+          {this.props.content}
+          <Text style={{color: 'red'}} onPress={this.deleteItem}> X
+          </Text>
+        </Text>
+      </View>
     )
   }
 

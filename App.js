@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Alert, TouchableHighlight, FlatList } from 'react-native';
 import ListItem from './components/ListItem';
+import InputField from './components/InputField';
 
 export default class App extends Component {
 
   constructor(props){
     super(props);
     this.state={
-      words: [{id: 1, key: 'Hey.'}, {id: 2, key: 'What\'s up?'}, {id: 3, key: 'You good?'}]
+      words: [{id: 1, key: 'Get groceries'}, {id: 2, key: 'Do laundry'}, {id: 3, key: 'Curse mankind'}]
     }
     this.removeIt = this.removeIt.bind(this);
+    this.submitIt = this.submitIt.bind(this);
   }
 
   alertHey() {
@@ -26,9 +28,22 @@ export default class App extends Component {
     });
   }
 
+  submitIt(input) {
+    const newId = this.state.words[this.state.words.length - 1].id + 1
+    const newItem = {
+      key: input,
+      id: newId
+    }
+    this.setState({
+      ...this.state,
+      words: [...this.state.words, newItem]
+    });
+  }
+
   render () {
     return (
       <View style={styles.container}>
+        <InputField submitIt={this.submitIt}/>
         <FlatList
           data = {this.state.words}
           renderItem = {({item}) => <ListItem styling={styles.text} content={item.key} id={item.id} removeIt={this.removeIt}/>}
@@ -48,7 +63,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    fontSize: 30,
+    fontSize: 25,
   },
   buttonContainer: {
     backgroundColor: 'white',
