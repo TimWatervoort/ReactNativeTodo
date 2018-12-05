@@ -8,35 +8,51 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this.state={
-      words: [{id: 1, key: 'Get groceries'}, {id: 2, key: 'Do laundry'}, {id: 3, key: 'Curse mankind'}]
+      words: []
     }
     this.removeIt = this.removeIt.bind(this);
     this.submitIt = this.submitIt.bind(this);
   }
 
-  alertHey() {
-    Alert.alert('Hey.');
-  }
+  keyExtractor = (item, index) => index.toString();
 
-  removeIt (id) {
-    const newState = this.state.words.filter(x => {
-      return parseInt(x.id) !== parseInt(id);
-    });
+  async componentDidMount () {
+    const response = await fetch('https://agile-sea-28350.herokuapp.com/tasks');
+    const json = await response.json();
     this.setState({
       ...this.state,
-      words: newState
+      words: json
     });
   }
 
-  submitIt(input) {
-    const newId = this.state.words[this.state.words.length - 1].id + 1
-    const newItem = {
-      key: input,
-      id: newId
-    }
+  async removeIt (id) {
+    const response = await fetch(`https://agile-sea-28350.herokuapp.com/tasks/${id}`, {
+      method: 'DELETE',
+      headers: {
+            "Content-Type": "application/json; charset=utf-8"
+          }
+    });
+    const json = await response.json();
     this.setState({
       ...this.state,
-      words: [...this.state.words, newItem]
+      words: json
+    });
+  }
+
+  async submitIt(input) {
+    const response = await fetch('https://agile-sea-28350.herokuapp.com/tasks', {
+      method: 'POST',
+      headers: {
+            "Content-Type": "application/json; charset=utf-8"
+          },
+      body: JSON.stringify({
+        task: input
+      })
+    })
+    const json = await response.json();
+    this.setState({
+      ...this.state,
+      words: json
     });
   }
 
@@ -45,8 +61,9 @@ export default class App extends Component {
       <View style={styles.container}>
         <InputField submitIt={this.submitIt}/>
         <FlatList
+          keyExtractor = {this.keyExtractor}
           data = {this.state.words}
-          renderItem = {({item}) => <ListItem styling={styles.text} content={item.key} id={item.id} removeIt={this.removeIt}/>}
+          renderItem = {({item}) => <ListItem styling={styles.text} content={item.task} id={item.id} removeIt={this.removeIt}/>}
         />
       </View>
     )

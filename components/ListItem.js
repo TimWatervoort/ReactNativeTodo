@@ -9,8 +9,8 @@ class ListItem extends Component {
   }
 
   deleteItem () {
-    const { removeIt } = this.props;
-    removeIt(this.props.id)
+    const { removeIt, id } = this.props;
+    removeIt(id);
   }
 
   render () {
